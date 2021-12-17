@@ -1,0 +1,54 @@
+function [best]=firefly_Algorithm(instr)
+
+if nargin<1,   instr=[12 50];     
+end
+n=instr(1);  MxGnrn=instr(2);
+
+rand('state',0);  
+
+str1='exp(-(x-4)^2-(y-4)^2)+exp(-(x+4)^2-(y-4)^2)';
+str2='+2*exp(-x^2-(y+4)^2)+2*exp(-x^2-y^2)';
+funstr=strcat(str1,str2);
+
+f=vectorize(inline(funstr));
+
+range=[-5 5 -5 5];
+
+
+Ngrid=100;
+dx=(range(2)-range(1))/Ngrid;
+dy=(range(4)-range(3))/Ngrid;
+[x,y]=meshgrid(range(1):dx:range(2),...
+               range(3):dy:range(4));
+z=f(x,y);
+% Display the shape of the objective function
+figure(1);    surfc(x,y,z);
+
+
+[xn,yn,Lightn]=init_ffa(n,range);
+
+ figure(2);
+
+for i=1:MxGnrn,     %%%%% start iterations
+
+	 contour(x,y,z,15); hold on;
+	
+	zn=f(xn,yn);
+
+	
+	[Lightn,Index]=sort(zn);
+	xn=xn(Index); yn=yn(Index);
+	xo=xn;   yo=yn;    Lighto=Lightn;
+	
+	plot(xn,yn,'.','markersize',10,'markerfacecolor','g');
+	
+	[xn,yn]=ffa_move(xn,yn,Lightn,xo,yo,Lighto,alpha,gamma,range);
+	drawnow;
+	
+		hold off;
+		
+	
+	alpha=newalpha(alpha,delta);
+		
+end  
+best(:,1)=xo'; best(:,2)=yo'; best(:,3)=Lighto';
