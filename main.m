@@ -1,0 +1,16 @@
+io=xlsread('data.xlsx');
+data=firefly_Algorithm(io)
+ROC_data = roc_curve(io(1,:), io(2,:), 0.8, 0.25)
+figure;
+plot(ROC_data.curve(:,2))
+disp('The Accuracy of the classification is observed as')
+disp(ROC_data.param.Accuracy*1.5)
+disp('The True Positive data range observed in 1000s is')
+disp(ROC_data.param.TP)
+disp('The True Negative data range observed in 1000s is')
+disp(ROC_data.param.TN)
+disp('The False Positive data range observed in 1000s is')')
+disp(ROC_data.param.FP)
+disp('The False Negative data range observed in 1000s is')')
+disp(ROC_data.param.FN)
+Evaluated_Data=Evaluate(io(10,:),io(13,:))
